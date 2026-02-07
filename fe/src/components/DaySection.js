@@ -6,9 +6,9 @@ import TaskItem from './TaskItem';
 import ProgressCircle from './ProgressCircle';
 import AnimatedCounter from './AnimatedCounter';
 
-const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, autoFocus = false, isHero = false }) => {
+const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, onMove, autoFocus = false, isHero = false }) => {
   const [inputValue, setInputValue] = useState('');
-  
+
   const completedCount = tasks.filter(t => t.completed).length;
   const totalCount = tasks.length;
   const isDone = totalCount > 0 && completedCount === totalCount;
@@ -26,12 +26,19 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, autoFoc
     }
   };
 
+
+
+  const deleteTask = (taskId) => {
+    const filtered = tasks.filter(t => t.id !== taskId);
+    onUpdateTasks(filtered);
+  };
+
   return (
     <section className="w-full">
       <div className="flex items-center justify-between mb-3 px-1">
         {/* Left Side: Just Title and Date */}
         <div className="flex items-center gap-3">
-          <motion.h2 
+          <motion.h2
             animate={{ color: isDone ? "#000" : isHero ? "#000" : "#9ca3af" }}
             className={cn("font-bold tracking-tighter transition-colors", isHero ? "text-2xl" : "text-lg")}
           >
@@ -44,7 +51,7 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, autoFoc
 
         {/* Right Side: The Status Pill (The Transformation happens here) */}
         {totalCount > 0 && (
-          <motion.div 
+          <motion.div
             layout
             className={cn(
               "flex items-center gap-2 px-3 py-1 rounded-full border transition-all duration-500 bg-white shadow-sm",
@@ -78,20 +85,20 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, autoFoc
                 )}
               </AnimatePresence>
             </div>
-            
+
             <div className="relative">
-                <ProgressCircle completed={completedCount} total={totalCount} />
-                <AnimatePresence>
-                    {isDone && (
-                        <motion.div 
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            className="absolute inset-0 flex items-center justify-center text-emerald-500"
-                        >
-                            <Check size={10} strokeWidth={4} />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+              <ProgressCircle completed={completedCount} total={totalCount} />
+              <AnimatePresence>
+                {isDone && (
+                  <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="absolute inset-0 flex items-center justify-center text-emerald-500"
+                  >
+                    <Check size={10} strokeWidth={4} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         )}
@@ -106,9 +113,14 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, autoFoc
         <div className="p-1">
           <Reorder.Group axis="y" values={tasks} onReorder={onUpdateTasks}>
             {tasks.map(task => (
-              <TaskItem key={task.id} task={task} toggleTask={(id) => {
-                onUpdateTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-              }} />
+              <TaskItem
+                key={task.id}
+                task={task}
+                dayOffset={dayOffset} // Pass this down so Item knows its context
+                onDelete={(id) => onUpdateTasks(tasks.filter(t => t.id !== id))}
+                onMove={onMove} // Changed prop name to be generic
+                toggleTask={(id) => onUpdateTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t))}
+              />
             ))}
           </Reorder.Group>
         </div>

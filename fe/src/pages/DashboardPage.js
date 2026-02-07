@@ -15,8 +15,38 @@ export default function DashboardPage() {
         { id: '1', text: 'Daily Standup', completed: false, category: 'Work', isUrgent: true },
         { id: '2', text: 'Review feedback from client', completed: false, category: 'Work', isUrgent: false },
       ],
+    },
+    professional: {
+      '0': [
+        { id: '1', text: 'Finish NR-1603', completed: false, category: 'Work', isUrgent: true },
+      ],
     }
   });
+
+  const handleMoveTask = (taskId, currentOffset, direction) => {
+    const targetOffset = currentOffset + direction;
+
+    // 1. Extract task from source
+    const taskToMove = data[activeTab][currentOffset]?.find(t => t.id === taskId);
+    if (!taskToMove) return;
+
+    // 2. Remove from source
+    const updatedSourceList = data[activeTab][currentOffset].filter(t => t.id !== taskId);
+
+    // 3. Add to target
+    const targetList = data[activeTab][targetOffset] || [];
+    // If moving forward, add to top. If moving back, add to top.
+    const updatedTargetList = [taskToMove, ...targetList];
+
+    setData(prev => ({
+      ...prev,
+      [activeTab]: {
+        ...prev[activeTab],
+        [currentOffset]: updatedSourceList,
+        [targetOffset]: updatedTargetList
+      }
+    }));
+  };
 
   const updateList = (dayKey, newTasks) => {
     setData(prev => ({
@@ -43,7 +73,7 @@ export default function DashboardPage() {
 
         {/* Tighter spacing between history, today and tomorrow: space-y-16 -> space-y-10 */}
         <div className="flex flex-col space-y-4">
-          <PastSection data={currentData} onUpdateTasks={updateList} />
+          <PastSection data={currentData} onUpdateTasks={updateList} onMove={handleMoveTask} />
 
           <div>
             <DaySection
@@ -54,6 +84,7 @@ export default function DashboardPage() {
               onUpdateTasks={(t) => updateList('0', t)}
               autoFocus={true}
               isHero={true}
+              onMove={handleMoveTask} // Pass it here
             />
           </div>
 
@@ -63,9 +94,10 @@ export default function DashboardPage() {
             dayOffset={1}
             tasks={currentData['1'] || []}
             onUpdateTasks={(t) => updateList('1', t)}
+            onMove={handleMoveTask} // Pass it here
           />
 
-          <FutureSection data={currentData} onUpdateTasks={updateList} />
+          <FutureSection data={currentData} onUpdateTasks={updateList} onMove={handleMoveTask} />
         </div>
       </main>
 
