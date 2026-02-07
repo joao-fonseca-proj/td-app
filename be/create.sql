@@ -1,0 +1,24 @@
+create table panel (created_at datetime(6) not null, id bigint not null auto_increment, updated_at datetime(6) not null, user_id bigint, name varchar(255), primary key (id)) engine=InnoDB;
+create table todo (completed bit not null, due_date date, position integer not null, created_at datetime(6) not null, id bigint not null auto_increment, panel_id bigint, updated_at datetime(6) not null, title varchar(255), category enum (), urgency enum ('NORMAL','URGENT'), primary key (id)) engine=InnoDB;
+create table users (created_at datetime(6) not null, id bigint not null auto_increment, updated_at datetime(6) not null, email varchar(255) not null, encryption_salt varchar(255) not null, name varchar(255) not null, password varchar(255) not null, username varchar(255) not null, primary key (id)) engine=InnoDB;
+alter table users add constraint UK6aetswqb9293sfyx68fl2s1g8 unique (encryption_salt);
+alter table panel add constraint FK8ue7dh7huhtdmxdurwkcqx8r3 foreign key (user_id) references users (id);
+alter table todo add constraint FKr41krts1fk0bf0iytayqj51jc foreign key (panel_id) references panel (id);
+create table panel (created_at datetime(6) not null, id bigint not null auto_increment, updated_at datetime(6) not null, user_id bigint, name varchar(255), primary key (id)) engine=InnoDB;
+create table todo (completed bit not null, due_date date, position integer not null, created_at datetime(6) not null, id bigint not null auto_increment, panel_id bigint, updated_at datetime(6) not null, title varchar(255), category enum (), urgency enum ('NORMAL','URGENT'), primary key (id)) engine=InnoDB;
+create table users (created_at datetime(6) not null, id bigint not null auto_increment, updated_at datetime(6) not null, email varchar(255) not null, encryption_salt varchar(255) not null, name varchar(255) not null, password varchar(255) not null, username varchar(255) not null, primary key (id)) engine=InnoDB;
+alter table users add constraint UK6aetswqb9293sfyx68fl2s1g8 unique (encryption_salt);
+alter table panel add constraint FK8ue7dh7huhtdmxdurwkcqx8r3 foreign key (user_id) references users (id);
+alter table todo add constraint FKr41krts1fk0bf0iytayqj51jc foreign key (panel_id) references panel (id);
+create table panel (created_at datetime(6) not null, id bigint not null auto_increment, updated_at datetime(6) not null, user_id bigint, name varchar(255), primary key (id)) engine=InnoDB;
+create table todo (completed bit not null, due_date date, position integer not null, created_at datetime(6) not null, id bigint not null auto_increment, panel_id bigint, updated_at datetime(6) not null, title varchar(255), category enum (), urgency enum ('NORMAL','URGENT'), primary key (id)) engine=InnoDB;
+create table users (created_at datetime(6) not null, id bigint not null auto_increment, updated_at datetime(6) not null, email varchar(255) not null, encryption_salt varchar(255) not null, name varchar(255) not null, password varchar(255) not null, username varchar(255) not null, primary key (id)) engine=InnoDB;
+alter table users add constraint UK6aetswqb9293sfyx68fl2s1g8 unique (encryption_salt);ƒ
+alter table panel add constraint FK8ue7dh7huhtdmxdurwkcqx8r3 foreign key (user_id) references users (id);
+alter table todo add constraint FKr41krts1fk0bf0iytayqj51jc foreign key (panel_id) references panel (id);
+create table panel (created_at datetime(6) not null, id bigint not null auto_increment, updated_at datetime(6) not null, user_id bigint, name varchar(255), primary key (id)) engine=InnoDB;
+create table todo (completed bit not null, due_date date, position integer not null, created_at datetime(6) not null, id bigint not null auto_increment, panel_id bigint, updated_at datetime(6) not null, title varchar(255), category enum (), urgency enum ('NORMAL','URGENT'), primary key (id)) engine=InnoDB;
+create table users (created_at datetime(6) not null, id bigint not null auto_increment, updated_at datetime(6) not null, email varchar(255) not null, encryption_salt varchar(255) not null, name varchar(255) not null, password varchar(255) not null, username varchar(255) not null, primary key (id)) engine=InnoDB;
+alter table users add constraint UK6aetswqb9293sfyx68fl2s1g8 unique (encryption_salt);
+alter table panel add constraint FK8ue7dh7huhtdmxdurwkcqx8r3 foreign key (user_id) references users (id);
+alter table todo add constraint FKr41krts1fk0bf0iytayqj51jc foreign key (panel_id) references panel (id);
