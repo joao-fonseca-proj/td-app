@@ -23,6 +23,22 @@ export default function DashboardPage() {
     }
   });
 
+  const handleEditTask = (taskId, currentOffset, newText) => {
+    setData(prev => {
+      const updatedList = prev[activeTab][currentOffset].map(t =>
+        t.id === taskId ? { ...t, text: newText } : t
+      );
+
+      return {
+        ...prev,
+        [activeTab]: {
+          ...prev[activeTab],
+          [currentOffset]: updatedList
+        }
+      };
+    });
+  };
+
   const handleMoveTask = (taskId, currentOffset, direction) => {
     const targetOffset = currentOffset + direction;
 
@@ -73,7 +89,12 @@ export default function DashboardPage() {
 
         {/* Tighter spacing between history, today and tomorrow: space-y-16 -> space-y-10 */}
         <div className="flex flex-col space-y-4">
-          <PastSection data={currentData} onUpdateTasks={updateList} onMove={handleMoveTask} />
+          <PastSection
+            data={currentData}
+            onUpdateTasks={updateList}
+            onMove={handleMoveTask}
+            onEdit={handleEditTask}
+          />
 
           <div>
             <DaySection
@@ -85,6 +106,7 @@ export default function DashboardPage() {
               autoFocus={true}
               isHero={true}
               onMove={handleMoveTask} // Pass it here
+              onEdit={handleEditTask}
             />
           </div>
 
@@ -95,9 +117,15 @@ export default function DashboardPage() {
             tasks={currentData['1'] || []}
             onUpdateTasks={(t) => updateList('1', t)}
             onMove={handleMoveTask} // Pass it here
+            onEdit={handleEditTask}
           />
 
-          <FutureSection data={currentData} onUpdateTasks={updateList} onMove={handleMoveTask} />
+          <FutureSection
+            data={currentData}
+            onUpdateTasks={updateList}
+            onMove={handleMoveTask}
+            onEdit={handleEditTask}
+          />
         </div>
       </main>
 

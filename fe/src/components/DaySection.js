@@ -6,7 +6,7 @@ import TaskItem from './TaskItem';
 import ProgressCircle from './ProgressCircle';
 import AnimatedCounter from './AnimatedCounter';
 
-const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, onMove, autoFocus = false, isHero = false }) => {
+const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, onMove, onEdit, autoFocus = false, isHero = false }) => {
   const [inputValue, setInputValue] = useState('');
 
   const completedCount = tasks.filter(t => t.completed).length;
@@ -110,6 +110,7 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, onMove,
                 key={task.id}
                 task={task}
                 dayOffset={dayOffset} // Pass this down so Item knows its context
+                onEdit={onEdit} // <--- Pass it here
                 onDelete={(id) => onUpdateTasks(tasks.filter(t => t.id !== id))}
                 onMove={onMove} // Changed prop name to be generic
                 toggleTask={(id) => onUpdateTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t))}

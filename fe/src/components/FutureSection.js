@@ -4,10 +4,10 @@ import { ChevronDown, Plus } from 'lucide-react';
 import { cn, getDayLabels } from '../utils/helpers';
 import DaySection from './DaySection';
 
-const FutureSection = ({ data, onUpdateTasks, onMove }) => {
+const FutureSection = ({ data, onUpdateTasks, onMove, onEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [pages, setPages] = useState(1);
-  const DAYS_PER_PAGE = 2;
+  const DAYS_PER_PAGE = 1;
 
   const days = Array.from({ length: pages * DAYS_PER_PAGE }, (_, i) => 2 + i);
 
@@ -57,7 +57,7 @@ const FutureSection = ({ data, onUpdateTasks, onMove }) => {
           >
             {days.map(day => (
               <DaySection
-                key={day} onMove={onMove} title={getDayLabels(day).title} dateLabel={getDayLabels(day).label}
+                key={day} onEdit={onEdit} onMove={onMove} title={getDayLabels(day).title} dateLabel={getDayLabels(day).label}
                 dayOffset={day} tasks={data[day] || []} onUpdateTasks={(t) => onUpdateTasks(day, t)}
               />
             ))}

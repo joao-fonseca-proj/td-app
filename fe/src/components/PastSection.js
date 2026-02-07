@@ -4,10 +4,10 @@ import { ChevronUp, Plus } from 'lucide-react';
 import { cn, getDayLabels } from '../utils/helpers';
 import DaySection from './DaySection';
 
-const PastSection = ({ data, onUpdateTasks, onMove }) => {
+const PastSection = ({ data, onUpdateTasks, onMove, onEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [pages, setPages] = useState(1);
-  const DAYS_PER_PAGE = 2;
+  const DAYS_PER_PAGE = 1;
 
   const days = Array.from({ length: pages * DAYS_PER_PAGE }, (_, i) => -1 - i);
 
@@ -22,7 +22,7 @@ const PastSection = ({ data, onUpdateTasks, onMove }) => {
       <div className="absolute top-[-20px] bottom-0 w-px bg-gray-100 -z-10" />
 
       {/* Centered Trigger Icon */}
-      <motion.button 
+      <motion.button
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -37,7 +37,7 @@ const PastSection = ({ data, onUpdateTasks, onMove }) => {
       {/* Subtle Reset Link */}
       <AnimatePresence>
         {isOpen && pages > 1 && (
-          <motion.button 
+          <motion.button
             initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             onClick={handleReset}
             className="mt-2 text-[9px] font-bold text-red-400 hover:text-red-600 transition-colors uppercase tracking-[0.2em]"
@@ -56,7 +56,7 @@ const PastSection = ({ data, onUpdateTasks, onMove }) => {
             className="w-full overflow-hidden space-y-10 pt-8"
           >
             <div className="flex justify-center">
-              <button 
+              <button
                 onClick={() => setPages(p => p + 1)}
                 className="w-fit flex items-center gap-2 px-8 py-2 bg-white border border-gray-100 border-dashed rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-all"
               >
@@ -65,9 +65,10 @@ const PastSection = ({ data, onUpdateTasks, onMove }) => {
             </div>
 
             {days.slice().reverse().map(day => (
-              <DaySection 
-                key={day} onMove={onMove} title={getDayLabels(day).title} dateLabel={getDayLabels(day).label} 
-                dayOffset={day} tasks={data[day] || []} onUpdateTasks={(t) => onUpdateTasks(day, t)} 
+              <DaySection
+                key={day}
+                onEdit={onEdit} onMove={onMove} title={getDayLabels(day).title} dateLabel={getDayLabels(day).label}
+                dayOffset={day} tasks={data[day] || []} onUpdateTasks={(t) => onUpdateTasks(day, t)}
               />
             ))}
           </motion.div>
