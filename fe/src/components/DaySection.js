@@ -26,13 +26,6 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, onMove,
     }
   };
 
-
-
-  const deleteTask = (taskId) => {
-    const filtered = tasks.filter(t => t.id !== taskId);
-    onUpdateTasks(filtered);
-  };
-
   return (
     <section className="w-full">
       <div className="flex items-center justify-between mb-3 px-1">
