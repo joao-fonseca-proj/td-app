@@ -1,5 +1,4 @@
 import React from 'react';
-import { Command } from 'lucide-react';
 
 const Footer = () => {
   return (
