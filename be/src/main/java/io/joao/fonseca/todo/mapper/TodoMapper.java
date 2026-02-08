@@ -1,10 +1,14 @@
 package io.joao.fonseca.todo.mapper;
 
 import io.joao.fonseca.todo.api.dto.todo.TodoDto;
+import io.joao.fonseca.todo.api.dto.todo.TodoFetchListDto;
+import io.joao.fonseca.todo.domain.todo.Panel;
 import io.joao.fonseca.todo.domain.todo.Todo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper
 public abstract class TodoMapper {

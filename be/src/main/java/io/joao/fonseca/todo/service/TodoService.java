@@ -1,6 +1,8 @@
 package io.joao.fonseca.todo.service;
 
+import io.joao.fonseca.todo.api.dto.panel.PanelDto;
 import io.joao.fonseca.todo.api.dto.todo.TodoDto;
+import io.joao.fonseca.todo.api.dto.todo.TodoFetchListDto;
 import io.joao.fonseca.todo.domain.common.Range;
 import io.joao.fonseca.todo.domain.todo.Panel;
 import io.joao.fonseca.todo.domain.todo.Todo;
@@ -101,11 +103,17 @@ public class TodoService {
         return todoMapper.toDto(savedTodo);
     }
 
-    public List<TodoDto> findByPanelInRange(final Panel panel, final Range range) {
+    public TodoFetchListDto findByPanelInRange(final Panel panel, final Range range) {
         final var todos = repository.findByPanelAndDueDateBetween(panel, range.min(), range.max());
-        return todos.stream()
+        final var todoList = todos.stream()
                 .map(todoMapper::toDto)
                 .toList();
+
+        // TODO ADD TO MAPPER
+        return new TodoFetchListDto(
+                new PanelDto(panel.getId(), panel.getName()),
+                todoList
+        );
     }
 
     public TodoDto createInPanel(final TodoDto todoDto, final Panel panel) {

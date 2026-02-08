@@ -37,4 +37,8 @@ public class PanelService {
         return repository.findById(id)
                 .filter(panel -> userId.equals(panel.getUser().getId()));
     }
+
+    public List<Panel> findByUserId(final Long userId) {
+        return repository.findByUserId(userId);
+    }
 }

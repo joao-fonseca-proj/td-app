@@ -1,6 +1,8 @@
 package io.joao.fonseca.todo.service;
 
+import io.joao.fonseca.todo.api.dto.todo.TodoDashboardDto;
 import io.joao.fonseca.todo.api.dto.todo.TodoDto;
+import io.joao.fonseca.todo.api.dto.todo.TodoFetchListDto;
 import io.joao.fonseca.todo.domain.common.Range;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +19,14 @@ public class TodoFetchingService {
         this.todoService = todoService;
     }
 
-    public List<TodoDto> get(final Long panelId, final Long userId, final int beforeLimit, final int afterLimit) {
-        final var panel = panelService.findByIdAndUserId(panelId, userId)
-                .orElseThrow();
+    public TodoDashboardDto get(final Long userId, final int beforeLimit, final int afterLimit) {
+        final var panels = panelService.findByUserId(userId);
         final var range = Range.of(beforeLimit, afterLimit);
 
-        return todoService.findByPanelInRange(panel, range);
+        return new TodoDashboardDto(
+                panels.stream()
+                        .map(panel -> todoService.findByPanelInRange(panel, range))
+                        .toList()
+        );
     }
 }

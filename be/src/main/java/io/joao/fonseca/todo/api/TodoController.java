@@ -1,6 +1,8 @@
 package io.joao.fonseca.todo.api;
 
+import io.joao.fonseca.todo.api.dto.todo.TodoDashboardDto;
 import io.joao.fonseca.todo.api.dto.todo.TodoDto;
+import io.joao.fonseca.todo.api.dto.todo.TodoFetchListDto;
 import io.joao.fonseca.todo.api.dto.todo.TodoTitleDto;
 import io.joao.fonseca.todo.service.TodoFetchingService;
 import io.joao.fonseca.todo.service.TodoRegistrationService;
@@ -70,12 +72,11 @@ public class TodoController {
         );
     }
 
-    @GetMapping("/panel/{panelId}")
-    public CompletableFuture<List<TodoDto>> getTodos(@PathVariable Long panelId,
-                                                     @RequestParam(value = "beforeLimit") int beforeLimit,
-                                                     @RequestParam(value = "afterLimit") int afterLimit) {
+    @GetMapping("/panel")
+    public CompletableFuture<TodoDashboardDto> getTodos(@RequestParam(value = "beforeLimit") int beforeLimit,
+                                                        @RequestParam(value = "afterLimit") int afterLimit) {
         return CompletableFuture.supplyAsync(
-                SecurityContextAwareSupplier.wrap(() -> todoFetchingService.get(panelId, AuthenticationHolder.getLoggedUser().getId(),
+                SecurityContextAwareSupplier.wrap(() -> todoFetchingService.get(AuthenticationHolder.getLoggedUser().getId(),
                         beforeLimit, afterLimit))
         );
     }
