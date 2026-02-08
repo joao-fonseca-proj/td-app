@@ -6,7 +6,7 @@ import TaskItem from './TaskItem';
 import ProgressCircle from './ProgressCircle';
 import AnimatedCounter from './AnimatedCounter';
 
-const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, onMove, onEdit, autoFocus = false, isHero = false }) => {
+const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, onCreateTask, onToggleTask, dayOffset, onMove, onEdit, autoFocus = false, isHero = false }) => {
   const [inputValue, setInputValue] = useState('');
 
   const completedCount = tasks.filter(t => t.completed).length;
@@ -16,12 +16,9 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, onMove,
   const handleKeyDown = (e) => {
     if ((e.key === 'Enter' || e.key === 'Tab') && inputValue.trim()) {
       e.preventDefault();
-      const { text, isUrgent, category } = analyzeTask(inputValue);
-      const newTask = {
-        id: Math.random().toString(36),
-        text, isUrgent, category, completed: false, dayOffset
-      };
-      onUpdateTasks([newTask, ...tasks]);
+
+      // CALL THE DASHBOARD HANDLER
+      onCreateTask(inputValue, dayOffset);
       setInputValue('');
     }
   };
@@ -113,7 +110,7 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, dayOffset, onMove,
                 onEdit={onEdit} // <--- Pass it here
                 onDelete={(id) => onUpdateTasks(tasks.filter(t => t.id !== id))}
                 onMove={onMove} // Changed prop name to be generic
-                toggleTask={(id) => onUpdateTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t))}
+                toggleTask={() => onToggleTask(task.id, dayOffset)} // Call the new handler
               />
             ))}
           </Reorder.Group>

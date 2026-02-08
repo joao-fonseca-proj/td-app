@@ -4,7 +4,7 @@ import { ChevronUp, Plus } from 'lucide-react';
 import { cn, getDayLabels } from '../utils/helpers';
 import DaySection from './DaySection';
 
-const PastSection = ({ data, onUpdateTasks, onMove, onEdit }) => {
+const PastSection = ({ data, onUpdateTasks, onMove, onEdit, onToggleTask, onLoadMore }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [pages, setPages] = useState(1);
   const DAYS_PER_PAGE = 1;
@@ -57,8 +57,10 @@ const PastSection = ({ data, onUpdateTasks, onMove, onEdit }) => {
           >
             <div className="flex justify-center">
               <button
-                onClick={() => setPages(p => p + 1)}
-                className="w-fit flex items-center gap-2 px-8 py-2 bg-white border border-gray-100 border-dashed rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-all"
+                onClick={() => {
+                  setPages(p => p + 1); // Expand UI
+                  onLoadMore();       // 2. TRIGGER API FETCH
+                }} className="w-fit flex items-center gap-2 px-8 py-2 bg-white border border-gray-100 border-dashed rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-all"
               >
                 <Plus size={12} /> More
               </button>
@@ -67,8 +69,14 @@ const PastSection = ({ data, onUpdateTasks, onMove, onEdit }) => {
             {days.slice().reverse().map(day => (
               <DaySection
                 key={day}
-                onEdit={onEdit} onMove={onMove} title={getDayLabels(day).title} dateLabel={getDayLabels(day).label}
-                dayOffset={day} tasks={data[day] || []} onUpdateTasks={(t) => onUpdateTasks(day, t)}
+                onEdit={onEdit} 
+                onMove={onMove} 
+                title={getDayLabels(day).title} 
+                dateLabel={getDayLabels(day).label}
+                dayOffset={day} 
+                tasks={data[day] || []} 
+                onUpdateTasks={(t) => onUpdateTasks(day, t)}
+                onToggleTask={onToggleTask}
               />
             ))}
           </motion.div>

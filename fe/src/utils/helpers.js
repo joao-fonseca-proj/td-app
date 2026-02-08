@@ -40,3 +40,32 @@ export const getDayLabels = (offset) => {
   if (offset > 1) return { title: `+${offset} Days`, label: dateString };
   if (offset < -1) return { title: `${Math.abs(offset)} Days Ago`, label: dateString };
 };
+
+/**
+ * Calculates the offset in days from today.
+ * e.g. If today is Feb 8 and dateString is Feb 7, returns -1.
+ */
+export const calculateOffsetFromDate = (dateString) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const [year, month, day] = dateString.split('-').map(Number);
+  const targetDate = new Date(year, month - 1, day);
+  targetDate.setHours(0, 0, 0, 0);
+
+  const diffTime = targetDate - today;
+  return Math.round(diffTime / (1000 * 60 * 60 * 24));
+};
+
+/**
+ * The reverse: converts an offset (0, 1) into YYYY-MM-DD for the BE.
+ */
+export const getDateStringFromOffset = (offset) => {
+  const date = new Date();
+  date.setDate(date.getDate() + offset);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+

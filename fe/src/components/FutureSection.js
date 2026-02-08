@@ -4,7 +4,7 @@ import { ChevronDown, Plus } from 'lucide-react';
 import { cn, getDayLabels } from '../utils/helpers';
 import DaySection from './DaySection';
 
-const FutureSection = ({ data, onUpdateTasks, onMove, onEdit }) => {
+const FutureSection = ({ data, onUpdateTasks, onMove, onEdit, onToggleTask, onLoadMore }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [pages, setPages] = useState(1);
   const DAYS_PER_PAGE = 1;
@@ -57,14 +57,24 @@ const FutureSection = ({ data, onUpdateTasks, onMove, onEdit }) => {
           >
             {days.map(day => (
               <DaySection
-                key={day} onEdit={onEdit} onMove={onMove} title={getDayLabels(day).title} dateLabel={getDayLabels(day).label}
-                dayOffset={day} tasks={data[day] || []} onUpdateTasks={(t) => onUpdateTasks(day, t)}
+                key={day}
+                onEdit={onEdit}
+                onMove={onMove}
+                title={getDayLabels(day).title}
+                dateLabel={getDayLabels(day).label}
+                dayOffset={day}
+                tasks={data[day] || []}
+                onUpdateTasks={(t) => onUpdateTasks(day, t)}
+                onToggleTask={onToggleTask}
               />
             ))}
 
             <div className="flex justify-center py-4">
               <button
-                onClick={() => setPages(p => p + 1)}
+                onClick={() => {
+                  setPages(p => p + 1); // Expand UI
+                  onLoadMore();       // 2. TRIGGER API FETCH
+                }}
                 className="w-fit flex items-center gap-2 px-8 py-2 bg-white border border-gray-100 border-dashed rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-all shadow-sm"
               >
                 <Plus size={12} /> MORE

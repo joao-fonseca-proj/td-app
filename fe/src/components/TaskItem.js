@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Reorder, motion, AnimatePresence } from 'framer-motion';
-import { GripVertical, Trash2, ArrowRight, ArrowLeft } from 'lucide-react'; 
+import { GripVertical, Trash2, ArrowRight, ArrowLeft } from 'lucide-react';
 import { cn } from '../utils/helpers';
 import CheckBurst from './CheckBurst';
 
 const TaskItem = ({ task, toggleTask, onDelete, onMove, onEdit, dayOffset }) => {
   const [showBurst, setShowBurst] = useState(false);
   const [direction, setDirection] = useState(0);
-  
+
   // EDIT STATE
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(task.text);
@@ -26,7 +26,7 @@ const TaskItem = ({ task, toggleTask, onDelete, onMove, onEdit, dayOffset }) => 
       setShowBurst(true);
       setTimeout(() => setShowBurst(false), 700);
     }
-    toggleTask(task.id);
+    toggleTask();
   };
 
   const handleBlur = () => {
@@ -68,7 +68,7 @@ const TaskItem = ({ task, toggleTask, onDelete, onMove, onEdit, dayOffset }) => 
         <button
           onClick={handleToggle}
           className={cn(
-            "w-5 h-5 min-w-[20px] min-h-[20px] rounded-full border-2 flex items-center justify-center transition-all duration-300", 
+            "w-5 h-5 min-w-[20px] min-h-[20px] rounded-full border-2 flex items-center justify-center transition-all duration-300",
             task.completed ? "bg-emerald-500 border-emerald-500 shadow-sm shadow-emerald-200" : "border-gray-200 hover:border-emerald-400 bg-white"
           )}
         >
@@ -102,19 +102,19 @@ const TaskItem = ({ task, toggleTask, onDelete, onMove, onEdit, dayOffset }) => 
             {task.text}
           </span>
         )}
-        
+
         <div className="flex items-center gap-1 flex-shrink-0">
           {!task.completed && dayOffset > 0 && (
-            <button onClick={() => {setDirection(-1); setTimeout(()=>onMove(task.id, dayOffset, -1), 10)}} className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-300 hover:text-black hover:bg-gray-100 rounded-md transition-all"><ArrowLeft size={14} /></button>
+            <button onClick={() => { setDirection(-1); setTimeout(() => onMove(task.id, dayOffset, -1), 10) }} className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-300 hover:text-black hover:bg-gray-100 rounded-md transition-all"><ArrowLeft size={14} /></button>
           )}
           {!task.completed && (
-            <button onClick={() => {setDirection(1); setTimeout(()=>onMove(task.id, dayOffset, 1), 10)}} className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-300 hover:text-black hover:bg-gray-100 rounded-md transition-all"><ArrowRight size={14} /></button>
+            <button onClick={() => { setDirection(1); setTimeout(() => onMove(task.id, dayOffset, 1), 10) }} className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-300 hover:text-black hover:bg-gray-100 rounded-md transition-all"><ArrowRight size={14} /></button>
           )}
           <button onClick={() => onDelete(task.id)} className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-md transition-all"><Trash2 size={14} /></button>
 
           <AnimatePresence>
             {task.isUrgent && !task.completed && (
-                <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded border border-red-100 uppercase tracking-widest ml-1">Urgent</motion.span>
+              <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded border border-red-100 uppercase tracking-widest ml-1">Urgent</motion.span>
             )}
           </AnimatePresence>
           <span className="text-[9px] px-2 py-1 rounded font-bold uppercase tracking-widest border border-gray-100 text-gray-400 bg-gray-50 ml-1">{task.category}</span>
