@@ -90,6 +90,17 @@ public class TodoService {
         return movePosition(savedNewTodo.getId(), userId, position);
     }
 
+    public TodoDto updateTitle(final Long todoId, final Long userId, final String title) {
+        final var todo = getTodoByUserOrThrow(todoId, userId);
+
+        final var newTodo = Todo.newBuilder(todo)
+                .title(title)
+                .build();
+        final var savedTodo = repository.save(newTodo);
+
+        return todoMapper.toDto(savedTodo);
+    }
+
     public List<TodoDto> findByPanelInRange(final Panel panel, final Range range) {
         final var todos = repository.findByPanelAndDueDateBetween(panel, range.min(), range.max());
         return todos.stream()
@@ -133,5 +144,4 @@ public class TodoService {
         }
         return todo;
     }
-
 }

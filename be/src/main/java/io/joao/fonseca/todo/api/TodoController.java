@@ -1,6 +1,7 @@
 package io.joao.fonseca.todo.api;
 
 import io.joao.fonseca.todo.api.dto.todo.TodoDto;
+import io.joao.fonseca.todo.api.dto.todo.TodoTitleDto;
 import io.joao.fonseca.todo.service.TodoFetchingService;
 import io.joao.fonseca.todo.service.TodoRegistrationService;
 import io.joao.fonseca.todo.service.TodoService;
@@ -34,6 +35,14 @@ public class TodoController {
         );
     }
 
+    @PatchMapping("/title/{id}")
+    public CompletableFuture<TodoDto> patchTodoTitle(@PathVariable final Long id,
+                                                     @RequestBody final TodoTitleDto title) {
+        return CompletableFuture.supplyAsync(
+                SecurityContextAwareSupplier.wrap(() -> todoService.updateTitle(id, AuthenticationHolder.getLoggedUser().getId(), title.title()))
+        );
+    }
+
     @PatchMapping("/dueDate/{id}")
     public CompletableFuture<TodoDto> patchTodoDueDate(@PathVariable final Long id,
                                                        @RequestParam(value = "position") final int position,
@@ -53,8 +62,8 @@ public class TodoController {
     }
 
     @PatchMapping("/move/{id}")
-    public CompletableFuture<TodoDto> patchTodoCompletion(@PathVariable Long id,
-                                                          @RequestParam(value = "position") int position) {
+    public CompletableFuture<TodoDto> patchTodoPosition(@PathVariable Long id,
+                                                        @RequestParam(value = "position") int position) {
         return CompletableFuture.supplyAsync(
                 SecurityContextAwareSupplier.wrap(() -> todoService.movePosition(id, AuthenticationHolder.getLoggedUser().getId(),
                         position))
