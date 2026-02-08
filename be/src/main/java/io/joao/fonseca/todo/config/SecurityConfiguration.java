@@ -40,7 +40,9 @@ public class SecurityConfiguration {
         SecurityContextHolder.setStrategyName(
                 SecurityContextHolder.MODE_INHERITABLETHREADLOCAL
         );
-        http
+        http.securityContext(securityContext ->
+                        securityContext.requireExplicitSave(false)
+                )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm ->
