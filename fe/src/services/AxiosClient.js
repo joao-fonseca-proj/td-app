@@ -18,7 +18,7 @@ export function createClient() {
             if (error.response) {
                 if (error.response.status === 401) {
                     deleteUserInformation();
-                    window.location.href = '/auth';
+                    window.location.href = '/login';
                 }
             } else if (error.request) {
                 //logout();
