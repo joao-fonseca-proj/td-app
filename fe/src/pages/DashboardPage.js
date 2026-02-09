@@ -96,8 +96,8 @@ export default function DashboardPage() {
   useEffect(() => {
     const isDataEmpty = !data[activeTab] || Object.keys(data[activeTab]).length === 0;
     fetchTasks(isDataEmpty);
-
-    }, [fetchTasks, activeTab]);
+    // eslint-disable-next-line
+  }, [fetchTasks, activeTab]);
 
   // --- API: CREATE (OPTIMISTIC) ---
   const handleCreateTask = async (text, dayOffset) => {
