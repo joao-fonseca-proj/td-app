@@ -116,12 +116,13 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, onCreateTask, onTo
           </Reorder.Group>
         </div>
 
-        <div className="relative group border-t border-gray-50">
-          <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300">
-            <Plus size={16} />
+        <div className="relative group border-t border-gray-50 bg-gray-50/10">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-black">
+            <Plus size={14} />
           </div>
           <input
-            type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={handleKeyDown}
+            type="text"
+            value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={handleKeyDown}
             autoFocus={autoFocus} placeholder="Add task..."
             className="w-full pl-12 pr-6 py-4 bg-transparent outline-none text-gray-900 placeholder:text-gray-300 text-[14px]"
           />

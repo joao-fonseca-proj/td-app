@@ -78,24 +78,26 @@ export default function DashboardPage() {
   }, []);
 
   // --- API: FETCH ---
-  const fetchTasks = useCallback(async () => {
+  const fetchTasks = useCallback(async (isInitial) => {
     try {
-      // Show loading spinner only on initial load
-      if (Object.keys(data[activeTab]).length === 0) setLoading(true);
+      if (isInitial) setLoading(true);
 
       const response = await getTodos(limits.before, limits.after);
       const transformed = transformBackendData(response.data.todoFetchList);
+
       setData(transformed);
     } catch (error) {
       console.error("Error fetching todos:", error);
     } finally {
       setLoading(false);
     }
-  }, [limits, activeTab, data, transformBackendData]);
+  }, [limits.before, limits.after, transformBackendData]); // ONLY depend on the limits and stable transformer
 
   useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+    const isDataEmpty = !data[activeTab] || Object.keys(data[activeTab]).length === 0;
+    fetchTasks(isDataEmpty);
+
+    }, [fetchTasks, activeTab]);
 
   // --- API: CREATE (OPTIMISTIC) ---
   const handleCreateTask = async (text, dayOffset) => {
@@ -374,7 +376,7 @@ export default function DashboardPage() {
           <ContextTabs activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
 
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col space-y-3">
 
           {/* PAST SECTION (History) */}
           <PastSection
@@ -412,7 +414,7 @@ export default function DashboardPage() {
             dateLabel={tomorrowLabels.label}
             dayOffset={1}
             tasks={currentData['1'] || []}
-            onUpdateTasks={(t) => handleReorderTasks('0', t)} // 3. Pass the new handler
+            onUpdateTasks={(t) => handleReorderTasks('1', t)} // 3. Pass the new handler
             onCreateTask={handleCreateTask}
             onToggleTask={handleToggleTask}
             onDeleteTask={handleDeleteTask} // Pass it here
