@@ -15,7 +15,7 @@ import {
   getDateStringFromOffset,
   analyzeTask
 } from '../utils/helpers';
-import { getTodos, patchTodoCompletion, postTodo } from '../services/TodoService';
+import { deleteTodoById, getTodos, patchTodoCompletion, postTodo } from '../services/TodoService';
 
 export default function DashboardPage() {
   // --- UI STATE ---
@@ -24,8 +24,7 @@ export default function DashboardPage() {
 
   // --- BACKEND STATE ---
   // Limits: how many days before/after today to fetch
-  const [limits, setLimits] = useState({ before: 0, after: 1 });
-  // Map to store dynamic IDs from BE: { personal: 5, professional: 12 }
+  const [limits, setLimits] = useState({ before: 2, after: 2 });
   const [panelIds, setPanelIds] = useState({ personal: null, professional: null });
 
   // The Main Data Store
@@ -69,7 +68,7 @@ export default function DashboardPage() {
             return a.position - b.position;
           });
         });
-        
+
         newState[tabKey] = dayGroups;
       }
     });
@@ -212,7 +211,6 @@ export default function DashboardPage() {
     // BE call would go here: await putTodo(taskId, { title: newText });
   };
 
-  // --- API: MOVE (BIDIRECTIONAL) ---
   const handleMoveTask = async (taskId, currentOffset, direction) => {
     const targetOffset = currentOffset + direction;
     const taskToMove = data[activeTab][currentOffset]?.find(t => t.id === taskId);
@@ -233,6 +231,30 @@ export default function DashboardPage() {
     }));
 
     // BE call would go here: await patchTodoDate(taskId, getDateStringFromOffset(targetOffset));
+  };
+
+  const handleDeleteTask = async (taskId, currentOffset) => {
+    // 1. Optimistic Update: Remove from UI instantly
+    setData(prev => {
+      const updatedDay = prev[activeTab][currentOffset].filter(t => t.id !== taskId);
+
+      return {
+        ...prev,
+        [activeTab]: {
+          ...prev[activeTab],
+          [currentOffset]: updatedDay
+        }
+      };
+    });
+
+    try {
+      // 2. Sync with Backend
+      await deleteTodoById(taskId);
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+      // Rollback: if the delete fails, re-fetch to bring the task back
+      fetchTasks();
+    }
   };
 
   // --- API: REORDER / TOGGLE ---
@@ -274,8 +296,10 @@ export default function DashboardPage() {
             onUpdateTasks={updateList}
             onMove={handleMoveTask}
             onEdit={handleEditTask}
+            onCreateTask={handleCreateTask}
+            onDeleteTask={handleDeleteTask} // Pass it here
             onToggleTask={handleToggleTask}
-            onLoadMore={() => setLimits(prev => ({ ...prev, before: prev.before + 2 }))}
+            onLoadMore={() => setLimits(prev => ({ ...prev, before: prev.before + 1 }))}
           />
 
           {/* TODAY (Hero Section) */}
@@ -288,6 +312,7 @@ export default function DashboardPage() {
               onUpdateTasks={(t) => updateList('0', t)}
               onCreateTask={handleCreateTask}
               onToggleTask={handleToggleTask}
+              onDeleteTask={handleDeleteTask} // Pass it here
               onMove={handleMoveTask}
               onEdit={handleEditTask}
               autoFocus={true}
@@ -304,6 +329,7 @@ export default function DashboardPage() {
             onUpdateTasks={(t) => updateList('1', t)}
             onCreateTask={handleCreateTask}
             onToggleTask={handleToggleTask}
+            onDeleteTask={handleDeleteTask} // Pass it here
             onMove={handleMoveTask}
             onEdit={handleEditTask}
           />
@@ -312,9 +338,11 @@ export default function DashboardPage() {
           <FutureSection
             data={currentData}
             onUpdateTasks={updateList}
+            onCreateTask={handleCreateTask}
             onMove={handleMoveTask}
             onEdit={handleEditTask}
             onToggleTask={handleToggleTask}
+            onDeleteTask={handleDeleteTask} // Pass it here
             onLoadMore={() => setLimits(prev => ({ ...prev, after: prev.after + 2 }))}
           />
         </div>
