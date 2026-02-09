@@ -15,7 +15,7 @@ import {
   getDateStringFromOffset,
   analyzeTask
 } from '../utils/helpers';
-import { deleteTodoById, getTodos, patchTodoCompletion, postTodo } from '../services/TodoService';
+import { deleteTodoById, getTodos, patchTodoCompletion, patchTodoDueDate, patchTodoPosition, patchTodoTitle, postTodo } from '../services/TodoService';
 
 export default function DashboardPage() {
   // --- UI STATE ---
@@ -91,7 +91,7 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, [limits, activeTab, transformBackendData]);
+  }, [limits, activeTab, data, transformBackendData]);
 
   useEffect(() => {
     fetchTasks();
@@ -103,34 +103,38 @@ export default function DashboardPage() {
     const panelId = panelIds[activeTab];
     const dueDate = getDateStringFromOffset(dayOffset);
 
-    const payload = {
-      panelId: panelId,
-      title: text,
-      dueDate: dueDate,
-      completed: false,
-      urgency: isUrgent ? "URGENT" : "NORMAL",
-      category: "GENERAL"
-    };
-
     // 1. Optimistic Update: Add to UI immediately
     const tempId = `temp-${Date.now()}`;
-    const newTask = {
-      id: tempId,
-      text: text,
-      completed: false,
-      category: "GENERAL",
-      isUrgent
-    };
 
     setData(prev => {
       const currentDayTasks = prev[activeTab][dayOffset] || [];
-      // Add new task to the beginning
-      const newList = [newTask, ...currentDayTasks];
 
-      // Sort to ensure it's at the top of the incomplete section
+      // Calculate a temporary position that is higher than any existing task
+      // This ensures it stays at the bottom during the sort
+      const maxPos = currentDayTasks.length > 0
+        ? Math.max(...currentDayTasks.map(t => t.position ?? 0))
+        : 0;
+
+      const newTask = {
+        id: tempId,
+        text: text,
+        completed: false,
+        category: "GENERAL",
+        isUrgent,
+        position: maxPos + 1 // Temporary position for the sort
+      };
+
+      // Put the new task at the END of the current array
+      const newList = [...currentDayTasks, newTask];
+
+      // Sort with our "Completed First" rule
       const sortedList = newList.sort((a, b) => {
-        if (a.completed !== b.completed) return a.completed ? 1 : -1;
-        return 0; // New tasks don't have a position yet, so they stay at top
+        // 1. Priority: Completed tasks (true) come before Incomplete (false)
+        if (a.completed !== b.completed) {
+          return a.completed ? -1 : 1;
+        }
+        // 2. Secondary: If completion is the same, sort by position
+        return (a.position ?? 0) - (b.position ?? 0);
       });
 
       return {
@@ -142,21 +146,105 @@ export default function DashboardPage() {
       };
     });
 
+    const payload = {
+      panelId: panelId,
+      title: text,
+      dueDate: dueDate,
+      completed: false,
+      urgency: isUrgent ? "URGENT" : "NORMAL",
+      category: "GENERAL"
+    };
 
     try {
       // 2. Sync with Backend
       const response = await postTodo(payload);
 
-      // 3. Replace temp ID with real DB ID
+      // 3. Replace temp ID and sync real position from BE if returned
       setData(prev => {
         const updated = prev[activeTab][dayOffset].map(t =>
-          t.id === tempId ? { ...t, id: response.data.id } : t
+          t.id === tempId ? { ...t, id: response.data.id, position: response.data.position } : t
         );
         return { ...prev, [activeTab]: { ...prev[activeTab], [dayOffset]: updated } };
       });
     } catch (error) {
       console.error("Failed to create task:", error);
       fetchTasks(); // Rollback to server state on error
+    }
+  };
+
+  const handleMoveTask = async (taskId, currentOffset, direction) => {
+    const targetOffset = currentOffset + direction;
+
+    // 1. Identify source and target lists
+    const sourceList = data[activeTab][currentOffset] || [];
+    const targetList = data[activeTab][targetOffset] || [];
+
+    const taskToMove = sourceList.find(t => t.id === taskId);
+    if (!taskToMove) return;
+
+    // 2. Prepare API params
+    const targetDueDate = getDateStringFromOffset(targetOffset);
+    // Since we want it at the end, the new position is the current length of the target list
+    const targetPosition = targetList.length;
+
+    // 3. Optimistic UI Update
+    // Remove from source
+    const updatedSource = sourceList.filter(t => t.id !== taskId);
+
+    // Add to target with new position metadata
+    const movedTask = { ...taskToMove, position: targetPosition };
+    const newTargetList = [...targetList, movedTask];
+
+    // Sort target list to respect "Completed First" rule
+    const sortedTarget = newTargetList.sort((a, b) => {
+      if (a.completed !== b.completed) return a.completed ? -1 : 1;
+      return (a.position ?? 0) - (b.position ?? 0);
+    });
+
+    setData(prev => ({
+      ...prev,
+      [activeTab]: {
+        ...prev[activeTab],
+        [currentOffset]: updatedSource,
+        [targetOffset]: sortedTarget
+      }
+    }));
+
+    try {
+      // 4. Sync with Backend
+      // PATCH /todo/dueDate/{id}?position={targetPosition}&dueDate={targetDueDate}
+      await patchTodoDueDate(taskId, targetPosition, targetDueDate);
+
+      // Note: Because your BE deletes/re-creates, if you return the new object 
+      // with a new ID, you'd update it here. If ID stays same, we are good.
+    } catch (error) {
+      console.error("Failed to move task due date:", error);
+      // Rollback on failure
+      fetchTasks();
+    }
+  };
+
+  const handleEditTask = async (taskId, currentOffset, newText) => {
+    // 1. Optimistic Update
+    setData(prev => {
+      const updatedList = prev[activeTab][currentOffset].map(t =>
+        t.id === taskId ? { ...t, text: newText } : t
+      );
+
+      return {
+        ...prev,
+        [activeTab]: {
+          ...prev[activeTab],
+          [currentOffset]: updatedList
+        }
+      };
+    });
+
+    try {
+      await patchTodoTitle(taskId, { title: newText });
+    } catch (error) {
+      console.error("Failed to update title:", error);
+      fetchTasks();
     }
   };
 
@@ -199,38 +287,36 @@ export default function DashboardPage() {
     }
   };
 
-  // --- API: EDIT ---
-  const handleEditTask = async (taskId, currentOffset, newText) => {
-    // Local update
-    setData(prev => {
-      const updatedList = prev[activeTab][currentOffset].map(t =>
-        t.id === taskId ? { ...t, text: newText } : t
-      );
-      return { ...prev, [activeTab]: { ...prev[activeTab], [currentOffset]: updatedList } };
-    });
-    // BE call would go here: await putTodo(taskId, { title: newText });
-  };
+  const handleReorderTasks = async (dayOffset, newTasks) => {
+    // 1. Identify which task was actually moved.
+    // We compare its current index in the array to its stored 'position' property.
+    const movedTask = newTasks.find((task, index) => task.position !== index);
 
-  const handleMoveTask = async (taskId, currentOffset, direction) => {
-    const targetOffset = currentOffset + direction;
-    const taskToMove = data[activeTab][currentOffset]?.find(t => t.id === taskId);
-    if (!taskToMove) return;
+    // 2. Update UI instantly (Optimistic)
+    // We do this immediately so the drag-and-drop feels buttery smooth.
+    updateList(dayOffset, newTasks);
 
-    // Local Update
-    const updatedSourceList = data[activeTab][currentOffset].filter(t => t.id !== taskId);
-    const targetList = data[activeTab][targetOffset] || [];
-    const updatedTargetList = [taskToMove, ...targetList];
+    if (movedTask) {
+      const newIndex = newTasks.indexOf(movedTask);
 
-    setData(prev => ({
-      ...prev,
-      [activeTab]: {
-        ...prev[activeTab],
-        [currentOffset]: updatedSourceList,
-        [targetOffset]: updatedTargetList
+      try {
+        // 3. Single API call to your backend
+        await patchTodoPosition(movedTask.id, newIndex);
+
+        // 4. SYNC LOCAL METADATA
+        // Since your BE automatically reordered the others, we must update 
+        // our local 'position' properties to match the new array indices.
+        // This ensures the NEXT drag-and-drop identifies the correct moved item.
+        newTasks.forEach((task, index) => {
+          task.position = index;
+        });
+
+      } catch (error) {
+        console.error("Failed to sync position:", error);
+        // If the server fails, we rollback to the last known good state
+        fetchTasks();
       }
-    }));
-
-    // BE call would go here: await patchTodoDate(taskId, getDateStringFromOffset(targetOffset));
+    }
   };
 
   const handleDeleteTask = async (taskId, currentOffset) => {
@@ -293,7 +379,7 @@ export default function DashboardPage() {
           {/* PAST SECTION (History) */}
           <PastSection
             data={currentData}
-            onUpdateTasks={updateList}
+            onUpdateTasks={handleReorderTasks} // 2. Pass the new handler
             onMove={handleMoveTask}
             onEdit={handleEditTask}
             onCreateTask={handleCreateTask}
@@ -309,7 +395,7 @@ export default function DashboardPage() {
               dateLabel={todayLabels.label}
               dayOffset={0}
               tasks={currentData['0'] || []}
-              onUpdateTasks={(t) => updateList('0', t)}
+              onUpdateTasks={(t) => handleReorderTasks('0', t)} // 3. Pass the new handler
               onCreateTask={handleCreateTask}
               onToggleTask={handleToggleTask}
               onDeleteTask={handleDeleteTask} // Pass it here
@@ -326,7 +412,7 @@ export default function DashboardPage() {
             dateLabel={tomorrowLabels.label}
             dayOffset={1}
             tasks={currentData['1'] || []}
-            onUpdateTasks={(t) => updateList('1', t)}
+            onUpdateTasks={(t) => handleReorderTasks('0', t)} // 3. Pass the new handler
             onCreateTask={handleCreateTask}
             onToggleTask={handleToggleTask}
             onDeleteTask={handleDeleteTask} // Pass it here
@@ -337,7 +423,7 @@ export default function DashboardPage() {
           {/* FUTURE SECTION (Upcoming) */}
           <FutureSection
             data={currentData}
-            onUpdateTasks={updateList}
+            onUpdateTasks={handleReorderTasks} // 2. Pass the new handler
             onCreateTask={handleCreateTask}
             onMove={handleMoveTask}
             onEdit={handleEditTask}

@@ -76,7 +76,7 @@ const PastSection = ({ data, onUpdateTasks, onMove, onEdit, onToggleTask, onCrea
                 dayOffset={day}
                 tasks={data[day] || []}
                 onCreateTask={onCreateTask}
-                onUpdateTasks={(t) => onUpdateTasks(day, t)}
+                onUpdateTasks={(newTasks) => onUpdateTasks(day, newTasks)} // This now calls handleReorderTasks
                 onToggleTask={onToggleTask}
                 onDeleteTask={onDeleteTask}
               />

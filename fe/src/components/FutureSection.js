@@ -65,7 +65,7 @@ const FutureSection = ({ data, onUpdateTasks, onMove, onEdit, onCreateTask, onTo
                 dayOffset={day}
                 tasks={data[day] || []}
                 onCreateTask={onCreateTask}
-                onUpdateTasks={(t) => onUpdateTasks(day, t)}
+                onUpdateTasks={(newTasks) => onUpdateTasks(day, newTasks)} // This now calls handleReorderTasks
                 onToggleTask={onToggleTask}
                 onDeleteTask={onDeleteTask}
               />

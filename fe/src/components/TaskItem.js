@@ -31,10 +31,11 @@ const TaskItem = ({ task, toggleTask, onDelete, onMove, onEdit, dayOffset }) => 
 
   const handleBlur = () => {
     setIsEditing(false);
+
     if (editText.trim() !== "" && editText !== task.text) {
       onEdit(task.id, dayOffset, editText);
     } else {
-      setEditText(task.text); // Reset if empty
+      setEditText(task.text);
     }
   };
 
@@ -53,7 +54,11 @@ const TaskItem = ({ task, toggleTask, onDelete, onMove, onEdit, dayOffset }) => 
       layout="position"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ x: direction === 1 ? 40 : direction === -1 ? -40 : 0, opacity: 0 }}
+      exit={{
+        opacity: 0,
+        x: direction === 1 ? 100 : -100, // Slide further out based on direction
+        transition: { duration: 0.3, ease: "easeIn" }
+      }}
       className={cn(
         "group flex items-center gap-3 h-[52px] px-4 border-b border-gray-50 bg-white transition-colors duration-500",
         task.completed ? "opacity-40" : "opacity-100"

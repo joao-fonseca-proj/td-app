@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Reorder, motion, AnimatePresence } from 'framer-motion';
 import { Plus, Check } from 'lucide-react';
-import { cn, analyzeTask } from '../utils/helpers';
+import { cn } from '../utils/helpers';
 import TaskItem from './TaskItem';
 import ProgressCircle from './ProgressCircle';
 import AnimatedCounter from './AnimatedCounter';
