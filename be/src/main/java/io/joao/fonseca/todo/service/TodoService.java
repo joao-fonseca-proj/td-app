@@ -137,7 +137,6 @@ public class TodoService {
     public TodoDto createInPanelWithHabit(final TodoDto todoDto, final Panel panel, final Habit habit) {
         final var todo = todoMapper.fromDto(todoDto);
         final var todoWithHabit = Todo.newBuilder(todo)
-                .title(habit.getName())
                 .category(habit.getCategory())
                 .habit(habit)
                 .build();
