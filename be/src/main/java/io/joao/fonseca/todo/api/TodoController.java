@@ -63,6 +63,14 @@ public class TodoController {
         );
     }
 
+    @PatchMapping("/habit/{id}")
+    public CompletableFuture<TodoDto> patchTodoHabit(@PathVariable Long id,
+                                                          @RequestParam(value = "habitId") Long habitId) {
+        return CompletableFuture.supplyAsync(
+                SecurityContextAwareSupplier.wrap(() -> todoRegistrationService.updateHabit(id, habitId, AuthenticationHolder.getLoggedUser().getId()))
+        );
+    }
+
     @PatchMapping("/move/{id}")
     public CompletableFuture<TodoDto> patchTodoPosition(@PathVariable Long id,
                                                         @RequestParam(value = "position") int position) {

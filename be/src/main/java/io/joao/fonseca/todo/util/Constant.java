@@ -15,4 +15,7 @@ public class Constant {
     // Panel
     public static final String PERSONAL_PANEL = "PERSONAL";
     public static final String PROFESSIONAL_PANEL = "PROFESSIONAL";
+
+    // Habit
+    public static final int HABIT_TODO_BUFFER = 30;
 }

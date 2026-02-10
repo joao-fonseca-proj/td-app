@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public record TodoDto(
         Long id,
         Long panelId,
+        Long habitId,
         String title,
         LocalDate dueDate,
         boolean completed,

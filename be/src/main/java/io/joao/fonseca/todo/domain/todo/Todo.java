@@ -1,6 +1,7 @@
 package io.joao.fonseca.todo.domain.todo;
 
 import io.joao.fonseca.todo.domain.common.AuditableIdentifiableEntity;
+import io.joao.fonseca.todo.domain.habit.Habit;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -19,6 +20,9 @@ public class Todo extends AuditableIdentifiableEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
     private int position;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "habit_id", nullable = true)
+    private Habit habit;
 
     public Todo() {
     }
@@ -38,6 +42,7 @@ public class Todo extends AuditableIdentifiableEntity {
         urgency = builder.urgency;
         category = builder.category;
         position = builder.position;
+        habit = builder.habit;
     }
 
     public static Builder newBuilder(final Todo copy) {
@@ -52,6 +57,7 @@ public class Todo extends AuditableIdentifiableEntity {
         builder.urgency = copy.getUrgency();
         builder.category = copy.getCategory();
         builder.position = copy.getPosition();
+        builder.habit = copy.getHabit();
         return builder;
     }
 
@@ -87,6 +93,10 @@ public class Todo extends AuditableIdentifiableEntity {
         return position;
     }
 
+    public Habit getHabit() {
+        return habit;
+    }
+
     public static final class Builder {
         private Long id;
         private OffsetDateTime createdAt;
@@ -98,6 +108,7 @@ public class Todo extends AuditableIdentifiableEntity {
         private Urgency urgency;
         private Category category;
         private int position;
+        private Habit habit;
 
         private Builder() {
         }
@@ -149,6 +160,11 @@ public class Todo extends AuditableIdentifiableEntity {
 
         public Builder position(final int val) {
             position = val;
+            return this;
+        }
+
+        public Builder habit(final Habit val) {
+            habit = val;
             return this;
         }
 
