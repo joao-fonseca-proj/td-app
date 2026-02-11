@@ -96,7 +96,7 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, onCreateTask, onTo
 
       {/* Main Section Body */}
       <div className={cn(
-        "bg-white border rounded-[22px] transition-all duration-700",
+        "bg-white border rounded-[22px]  transition-all duration-700",
         isHero ? "border-gray-200 shadow-sm" : "border-gray-100 opacity-80",
         isDone && "border-emerald-500/30 shadow-lg shadow-emerald-500/[0.02]"
       )}>
@@ -116,16 +116,25 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, onCreateTask, onTo
           </Reorder.Group>
         </div>
 
-        <div className="relative group border-t border-gray-50 bg-gray-50/10">
+        {/* INPUT AREA: Fixed with rounded-b-[22px] */}
+        <div className={cn(
+          "relative group border-none bg-gray-50/10 transition-colors",
+          "rounded-b-[20px]" // This makes the input sit perfectly inside the parent curve
+        )}>
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-black">
             <Plus size={14} />
           </div>
           <input
             type="text"
-            value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={handleKeyDown}
-            autoFocus={autoFocus} placeholder="Add task..."
-            className="w-full pl-12 pr-6 py-4 bg-transparent outline-none text-gray-900 placeholder:text-gray-300 text-[14px]"
-          />
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)} onKeyDown={handleKeyDown}
+            autoFocus={autoFocus}
+            placeholder="Add task..."
+            className={cn(
+              "w-full pl-12 pr-6 py-4 bg-transparent border-none outline-none", // outline-none is critical
+              "text-gray-900 placeholder:text-gray-300 text-[14px]",
+              "rounded-b-[21px]"
+            )} />
         </div>
       </div>
     </section>

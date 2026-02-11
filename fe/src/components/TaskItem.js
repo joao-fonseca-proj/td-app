@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Reorder, motion, AnimatePresence } from 'framer-motion';
-import { GripVertical, Trash2, ArrowRight, ArrowLeft, RefreshCcw } from 'lucide-react';
+import { GripVertical, Trash2, ArrowRight, ArrowLeft } from 'lucide-react';
 import { cn } from '../utils/helpers';
 import CheckBurst from './CheckBurst';
 import HabitInfoCard from './HabitInfoCard'; // Ensure this is imported
