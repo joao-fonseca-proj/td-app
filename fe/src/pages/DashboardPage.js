@@ -16,6 +16,7 @@ import {
   analyzeTask
 } from '../utils/helpers';
 import { deleteTodoById, getTodos, patchTodoCompletion, patchTodoDueDate, patchTodoPosition, patchTodoTitle, postTodo } from '../services/TodoService';
+import HabitCreator from '../components/HabitCreator';
 
 export default function DashboardPage() {
   // --- UI STATE ---
@@ -373,8 +374,12 @@ export default function DashboardPage() {
       <Navbar />
 
       <main className="flex-1 w-full max-w-2xl mx-auto px-6 pt-6 pb-20">
-        <div className="mb-6 text-center md:text-left">
+        {/* NEW: Unified Control Row */}
+        <div className="flex items-center justify-between mb-8 pb-2 border-b border-gray-100/50">
           <ContextTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+
+          {/* HabitCreator now lives here, on the right */}
+          <HabitCreator panelId={panelIds[activeTab]} />
         </div>
 
         <div className="flex flex-col space-y-3">

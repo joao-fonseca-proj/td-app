@@ -11,3 +11,13 @@ export function findHabitById(id) {
         `${HABIT_PATH}/${id}`
     );
 }
+
+/**
+ * POST /habit
+ */
+export function postHabit(body) {
+    return createClient().post(
+        HABIT_PATH,
+        body
+    );
+}
