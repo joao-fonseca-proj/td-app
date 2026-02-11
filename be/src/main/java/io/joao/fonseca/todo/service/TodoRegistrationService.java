@@ -3,6 +3,7 @@ package io.joao.fonseca.todo.service;
 import io.joao.fonseca.todo.api.dto.todo.TodoDto;
 import io.joao.fonseca.todo.domain.todo.Todo;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,6 +32,7 @@ public class TodoRegistrationService {
         return todoService.createInPanel(todoDto, panel);
     }
 
+    @Transactional
     public TodoDto updateHabit(final Long todoId, final Long habitId, final Long userId) {
         final var habit = habitService.findByIdAndUserId(habitId, userId)
                 .orElseThrow();

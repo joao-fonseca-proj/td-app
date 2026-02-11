@@ -2,13 +2,11 @@ package io.joao.fonseca.todo.api;
 
 import io.joao.fonseca.todo.api.dto.habit.HabitDto;
 import io.joao.fonseca.todo.service.HabitRegistrationService;
+import io.joao.fonseca.todo.service.HabitService;
 import io.joao.fonseca.todo.service.auth.AuthenticationHolder;
 import io.joao.fonseca.todo.service.auth.SecurityContextAwareSupplier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -17,15 +15,24 @@ import java.util.concurrent.CompletableFuture;
 public class HabitController {
 
     private final HabitRegistrationService habitRegistrationService;
+    private final HabitService habitService;
 
-    public HabitController(final HabitRegistrationService habitRegistrationService) {
+    public HabitController(final HabitRegistrationService habitRegistrationService, final HabitService habitService) {
         this.habitRegistrationService = habitRegistrationService;
+        this.habitService = habitService;
     }
 
     @PostMapping
     public CompletableFuture<HabitDto> postTodo(@RequestBody final HabitDto habitDto) {
         return CompletableFuture.supplyAsync(
                 SecurityContextAwareSupplier.wrap(() -> habitRegistrationService.create(habitDto, AuthenticationHolder.getLoggedUser().getId()))
+        );
+    }
+
+    @GetMapping("/{id}")
+    public CompletableFuture<HabitDto> getHabit(@PathVariable final Long id) {
+        return CompletableFuture.supplyAsync(
+                SecurityContextAwareSupplier.wrap(() -> habitService.findById(id, AuthenticationHolder.getLoggedUser().getId()))
         );
     }
 

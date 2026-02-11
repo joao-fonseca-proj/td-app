@@ -47,4 +47,10 @@ public class HabitService {
     public Stream<Habit> findAllStream() {
         return repository.streamAllBy();
     }
+
+    public HabitDto findById(final Long id, final Long userId) {
+        return findByIdAndUserId(id, userId)
+                .map(habitMapper::toDto)
+                .orElseThrow();
+    }
 }

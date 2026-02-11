@@ -110,6 +110,7 @@ public class TodoService {
 
         final var updatedTodo = Todo.newBuilder(todo)
                 .habit(habit)
+                .panel(habit.getPanel())
                 .build();
         final var savedTodo = repository.save(updatedTodo);
 
