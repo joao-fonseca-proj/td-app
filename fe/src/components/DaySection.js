@@ -96,7 +96,7 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, onCreateTask, onTo
 
       {/* Main Section Body */}
       <div className={cn(
-        "bg-white border rounded-[22px] overflow-hidden transition-all duration-700",
+        "bg-white border rounded-[22px] transition-all duration-700",
         isHero ? "border-gray-200 shadow-sm" : "border-gray-100 opacity-80",
         isDone && "border-emerald-500/30 shadow-lg shadow-emerald-500/[0.02]"
       )}>

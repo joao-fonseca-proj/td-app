@@ -55,7 +55,8 @@ export default function DashboardPage() {
             completed: todo.completed,
             category: todo.category || 'GENERAL',
             isUrgent: todo.urgency === 'URGENT',
-            position: todo.position
+            position: todo.position,
+            habitId: todo.habitId
           });
         });
 
