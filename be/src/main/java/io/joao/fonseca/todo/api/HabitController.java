@@ -4,10 +4,12 @@ import io.joao.fonseca.todo.api.dto.habit.HabitDto;
 import io.joao.fonseca.todo.service.HabitRegistrationService;
 import io.joao.fonseca.todo.service.HabitService;
 import io.joao.fonseca.todo.service.auth.AuthenticationHolder;
+import io.joao.fonseca.todo.service.auth.SecurityContextAwareRunnable;
 import io.joao.fonseca.todo.service.auth.SecurityContextAwareSupplier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -36,4 +38,18 @@ public class HabitController {
         );
     }
 
+    @GetMapping("/user")
+    public CompletableFuture<List<HabitDto>> getHabitsByUserId() {
+        return CompletableFuture.supplyAsync(
+                SecurityContextAwareSupplier.wrap(() -> habitService.findByUserId(AuthenticationHolder.getLoggedUser().getId()))
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public CompletableFuture<Void> deleteHabitById(@PathVariable final Long id,
+                                @RequestParam("deleteTasks") final boolean deleteTasks) {
+        return CompletableFuture.runAsync(
+                SecurityContextAwareRunnable.wrap(() -> habitRegistrationService.deleteHabitById(id, AuthenticationHolder.getLoggedUser().getId(), deleteTasks))
+        );
+    }
 }

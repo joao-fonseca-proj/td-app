@@ -53,4 +53,14 @@ public class HabitService {
                 .map(habitMapper::toDto)
                 .orElseThrow();
     }
+
+    public List<HabitDto> findByUserId(final Long userId) {
+        return repository.findByPanelUserId(userId).stream()
+                .map(habitMapper::toDto)
+                .toList();
+    }
+
+    public void deleteHabitById(final Long id) {
+        repository.deleteById(id);
+    }
 }

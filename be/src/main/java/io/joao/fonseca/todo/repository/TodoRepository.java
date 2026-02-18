@@ -20,4 +20,8 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     List<Todo> findByPanelAndDueDate(Panel panel, LocalDate dueDate);
 
     List<Todo> findByPanelAndDueDateBetween(Panel panel, LocalDate before, LocalDate after);
+
+    void deleteByHabitId(Long habitId);
+
+    List<Todo> findByHabitId(Long habitId);
 }

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -184,5 +183,19 @@ public class TodoService {
             throw new IllegalArgumentException("Cannot delete todo from different user");
         }
         return todo;
+    }
+
+    public void deleteTodosByHabitId(final Long habitId) {
+        repository.deleteByHabitId(habitId);
+    }
+
+    public void nullTodosByHabitId(final Long habitId) {
+        final var todos = repository.findByHabitId(habitId).stream()
+                .map(todo -> Todo.newBuilder(todo)
+                        .habit(null)
+                        .build())
+                .toList();
+
+        repository.saveAll(todos);
     }
 }
