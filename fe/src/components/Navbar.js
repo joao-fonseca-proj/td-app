@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bell, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { deleteUserInformation } from '../services/AuthenticationService';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const Navbar = () => {
           <div className="w-6 h-6 bg-black rounded-md flex items-center justify-center">
             <div className="w-2 h-2 bg-white rounded-full" />
           </div>
-          <span className="font-bold tracking-tight text-lg">TD APP.</span>
+          <span className="font-bold tracking-tight text-lg">falo.</span>
         </div>
 
         {/* Right Actions */}
@@ -26,7 +27,10 @@ const Navbar = () => {
           <div className="h-4 w-px bg-gray-200"></div>
           
           <button 
-            onClick={() => navigate('/login')}
+            onClick={() => {
+              deleteUserInformation();
+              navigate('/auth');
+            }}
             className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center hover:border-gray-400 hover:text-red-500 transition-all group"
             title="Logout"
           >

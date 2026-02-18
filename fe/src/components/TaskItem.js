@@ -46,6 +46,9 @@ const TaskItem = ({ task, fetchTasks, toggleTask, onDelete, onMove, onEdit, dayO
   };
 
   const toggleHabitInfo = async (e) => {
+    if(!task.habitId) {
+      return;
+    }
     e.stopPropagation();
     if (showHabitCard) {
       setShowHabitCard(false);

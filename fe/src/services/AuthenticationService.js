@@ -25,6 +25,6 @@ export function saveUserInformation(user) {
     return saveToLocalStorage(USER_STORAGE_KEY, user);
 }
 
-export function deleteUserInformation(user) {
+export function deleteUserInformation() {
     return deleteFromStorage(USER_STORAGE_KEY);
 }

@@ -113,7 +113,7 @@ const HabitInfoCard = ({ habit, loading, onClose, onRefresh }) => {
               </div>
 
               <div className="pt-1 flex gap-1.5">
-                <button className="flex-1 py-2 bg-zinc-900 text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-black transition-all">
+                <button disabled={true} className="flex-1 py-2 bg-zinc-900 text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-black transition-all">
                   Settings
                 </button>
                 <button 

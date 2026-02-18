@@ -65,7 +65,7 @@ const AuthPage = () => {
           <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center shadow-lg shadow-black/10">
             <div className="w-2.5 h-2.5 bg-white rounded-full" />
           </div>
-          <span className="font-bold tracking-tight text-2xl text-black">Focus.</span>
+          <span className="font-bold tracking-tight text-2xl text-black">falo</span>
         </div>
 
         <div className="flex bg-gray-200/50 p-1 rounded-xl mb-6">
