@@ -14,7 +14,7 @@ const DAYS = [
   { id: 'SUNDAY', label: 'S' }
 ];
 
-const HabitCreator = ({ panelId }) => {
+const HabitCreator = ({ panelId, fetchTasks}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState('');
   const [selectedDays, setSelectedDays] = useState([]);
@@ -49,6 +49,7 @@ const HabitCreator = ({ panelId }) => {
     } catch (err) {
       console.error("Forge failed:", err);
     } finally {
+      fetchTasks();
       setLoading(false);
     }
   };
@@ -106,7 +107,7 @@ const HabitCreator = ({ panelId }) => {
                     <motion.div 
                         initial={{ width: "0%" }}
                         animate={{ width: "100%" }}
-                        transition={{ duration: 12, ease: "linear" }}
+                        transition={{ duration: 30, ease: "linear" }}
                         className="h-full bg-amber-500"
                     />
                 </div>

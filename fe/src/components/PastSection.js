@@ -4,7 +4,7 @@ import { ChevronUp, Plus } from 'lucide-react';
 import { cn, getDayLabels } from '../utils/helpers';
 import DaySection from './DaySection';
 
-const PastSection = ({ data, onUpdateTasks, onMove, onEdit, onToggleTask, onCreateTask, onDeleteTask, onLoadMore }) => {
+const PastSection = ({ data, onUpdateTasks, fetchTasks, onMove, onEdit, onToggleTask, onCreateTask, onDeleteTask, onLoadMore }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [pages, setPages] = useState(1);
   const DAYS_PER_PAGE = 1;
@@ -79,6 +79,7 @@ const PastSection = ({ data, onUpdateTasks, onMove, onEdit, onToggleTask, onCrea
                 onUpdateTasks={(newTasks) => onUpdateTasks(day, newTasks)} // This now calls handleReorderTasks
                 onToggleTask={onToggleTask}
                 onDeleteTask={onDeleteTask}
+                fetchTasks={fetchTasks}
               />
             ))}
           </motion.div>

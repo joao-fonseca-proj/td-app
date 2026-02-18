@@ -6,7 +6,7 @@ import TaskItem from './TaskItem';
 import ProgressCircle from './ProgressCircle';
 import AnimatedCounter from './AnimatedCounter';
 
-const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, onCreateTask, onToggleTask, onDeleteTask, dayOffset, onMove, onEdit, autoFocus = false, isHero = false }) => {
+const DaySection = ({ title, dateLabel, tasks, fetchTasks,  onUpdateTasks, onCreateTask, onToggleTask, onDeleteTask, dayOffset, onMove, onEdit, autoFocus = false, isHero = false }) => {
   const [inputValue, setInputValue] = useState('');
 
   const completedCount = tasks.filter(t => t.completed).length;
@@ -112,6 +112,7 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, onCreateTask, onTo
                 onMove={onMove} // Changed prop name to be generic
                 toggleTask={() => onToggleTask(task.id, dayOffset)} // Call the new handler
                 onDelete={() => onDeleteTask(task.id, dayOffset)} // Call the handler
+                fetchTasks={fetchTasks}
               />
             ))}
           </Reorder.Group>

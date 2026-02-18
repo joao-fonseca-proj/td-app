@@ -4,7 +4,7 @@ import { ChevronDown, Plus } from 'lucide-react';
 import { cn, getDayLabels } from '../utils/helpers';
 import DaySection from './DaySection';
 
-const FutureSection = ({ data, onUpdateTasks, onMove, onEdit, onCreateTask, onToggleTask, onDeleteTask, onLoadMore }) => {
+const FutureSection = ({ data, onUpdateTasks, fetchTasks, onMove, onEdit, onCreateTask, onToggleTask, onDeleteTask, onLoadMore }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [pages, setPages] = useState(1);
   const DAYS_PER_PAGE = 1;
@@ -68,6 +68,7 @@ const FutureSection = ({ data, onUpdateTasks, onMove, onEdit, onCreateTask, onTo
                 onUpdateTasks={(newTasks) => onUpdateTasks(day, newTasks)} // This now calls handleReorderTasks
                 onToggleTask={onToggleTask}
                 onDeleteTask={onDeleteTask}
+                fetchTasks={fetchTasks}
               />
             ))}
 

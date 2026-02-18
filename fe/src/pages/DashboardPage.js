@@ -379,7 +379,7 @@ export default function DashboardPage() {
           <ContextTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
           {/* HabitCreator now lives here, on the right */}
-          <HabitCreator panelId={panelIds[activeTab]} />
+          <HabitCreator panelId={panelIds[activeTab]} fetchTasks={fetchTasks}/>
         </div>
 
         <div className="flex flex-col space-y-3">
@@ -390,6 +390,7 @@ export default function DashboardPage() {
             onUpdateTasks={handleReorderTasks} // 2. Pass the new handler
             onMove={handleMoveTask}
             onEdit={handleEditTask}
+            fetchTasks={fetchTasks}
             onCreateTask={handleCreateTask}
             onDeleteTask={handleDeleteTask} // Pass it here
             onToggleTask={handleToggleTask}
@@ -403,6 +404,7 @@ export default function DashboardPage() {
               dateLabel={todayLabels.label}
               dayOffset={0}
               tasks={currentData['0'] || []}
+              fetchTasks={fetchTasks}
               onUpdateTasks={(t) => handleReorderTasks('0', t)} // 3. Pass the new handler
               onCreateTask={handleCreateTask}
               onToggleTask={handleToggleTask}
@@ -420,6 +422,7 @@ export default function DashboardPage() {
             dateLabel={tomorrowLabels.label}
             dayOffset={1}
             tasks={currentData['1'] || []}
+            fetchTasks={fetchTasks}
             onUpdateTasks={(t) => handleReorderTasks('1', t)} // 3. Pass the new handler
             onCreateTask={handleCreateTask}
             onToggleTask={handleToggleTask}

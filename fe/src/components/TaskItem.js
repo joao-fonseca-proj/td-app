@@ -6,7 +6,7 @@ import CheckBurst from './CheckBurst';
 import HabitInfoCard from './HabitInfoCard'; // Ensure this is imported
 import { findHabitById } from '../services/HabitService'; // Adjust to your service path
 
-const TaskItem = ({ task, toggleTask, onDelete, onMove, onEdit, dayOffset }) => {
+const TaskItem = ({ task, fetchTasks, toggleTask, onDelete, onMove, onEdit, dayOffset }) => {
   const [showBurst, setShowBurst] = useState(false);
   const [direction, setDirection] = useState(0);
 
@@ -153,12 +153,12 @@ const TaskItem = ({ task, toggleTask, onDelete, onMove, onEdit, dayOffset }) => 
               <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="text-[8px] font-black text-red-500 bg-red-50 px-1 py-0.5 rounded border border-red-100 uppercase">!</motion.span>
             )}
           </AnimatePresence>
-          <span 
+          <span
             onClick={toggleHabitInfo}
             className={cn(
               "text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-tighter border transition-colors select-none",
-              isHabit 
-                ? "bg-amber-50 border-amber-100 text-amber-600 hover:bg-amber-100 cursor-pointer active:scale-95" 
+              isHabit
+                ? "bg-amber-50 border-amber-100 text-amber-600 hover:bg-amber-100 cursor-pointer active:scale-95"
                 : "bg-gray-50 border-gray-100 text-gray-400",
               "max-w-[50px] truncate sm:max-w-none"
             )}
@@ -171,10 +171,11 @@ const TaskItem = ({ task, toggleTask, onDelete, onMove, onEdit, dayOffset }) => 
       {/* --- FLOATING HABIT CARD --- */}
       <AnimatePresence>
         {showHabitCard && (
-          <HabitInfoCard 
-            habit={habitData} 
-            loading={loadingHabit} 
-            onClose={() => setShowHabitCard(false)} 
+          <HabitInfoCard
+            habit={habitData}
+            loading={loadingHabit}
+            onClose={() => setShowHabitCard(false)}
+            onRefresh={fetchTasks}
           />
         )}
       </AnimatePresence>
