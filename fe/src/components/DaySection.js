@@ -96,11 +96,12 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, onCreateTask, onTo
 
       {/* Main Section Body */}
       <div className={cn(
-        "bg-white border rounded-[22px]  transition-all duration-700",
+        "bg-white border rounded-[22px] transition-all duration-700 relative",
         isHero ? "border-gray-200 shadow-sm" : "border-gray-100 opacity-80",
         isDone && "border-emerald-500/30 shadow-lg shadow-emerald-500/[0.02]"
+
       )}>
-        <div className="p-1">
+        <div className="p-1 pb-0"> {/* Removed bottom padding to bring input closer */}
           <Reorder.Group axis="y" values={tasks} onReorder={onUpdateTasks}>
             {tasks.map(task => (
               <TaskItem
@@ -117,12 +118,8 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, onCreateTask, onTo
         </div>
 
         {/* INPUT AREA: Fixed with rounded-b-[22px] */}
-        <div className={cn(
-          "relative group border-none bg-gray-50/10 transition-colors",
-          "rounded-b-[20px]" // This makes the input sit perfectly inside the parent curve
-        )}>
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-black">
-            <Plus size={14} />
+        <div className="group relative flex items-center h-[42px] px-3 pb-1">
+          <div className="w-8 flex-shrink-0 flex justify-center items-center text-gray-300 group-focus-within:text-black transition-colors duration-300">            <Plus size={14} />
           </div>
           <input
             type="text"
@@ -131,9 +128,9 @@ const DaySection = ({ title, dateLabel, tasks, onUpdateTasks, onCreateTask, onTo
             autoFocus={autoFocus}
             placeholder="Add task..."
             className={cn(
-              "w-full pl-12 pr-6 py-4 bg-transparent border-none outline-none", // outline-none is critical
-              "text-gray-900 placeholder:text-gray-300 text-[14px]",
-              "rounded-b-[21px]"
+              "flex-1 bg-transparent border-none outline-none",
+              "text-gray-900 placeholder:text-gray-300 text-[13px] font-medium",
+              "transition-all"
             )} />
         </div>
       </div>
