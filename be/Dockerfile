@@ -1,14 +1,14 @@
-# Use OpenJDK 25
-FROM eclipse-temurin:25-jdk-jammy
-
-# Set working directory
+# Stage 1: Build
+FROM maven:3.9-eclipse-temurin-25 AS build
 WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Copy the built Spring Boot JAR into the container
-COPY target/*.jar app.jar
-
-# Expose port Spring Boot listens on
-EXPOSE 8080
-
-# Run the application
+# Stage 2: Run
+FROM eclipse-temurin:25-jre-jammy
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8081
 ENTRYPOINT ["java", "-jar", "app.jar"]
