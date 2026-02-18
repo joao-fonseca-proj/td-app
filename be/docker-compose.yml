@@ -21,7 +21,7 @@ services:
     container_name: mysql-db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: penvelope
+      MYSQL_DATABASE: falo
       MYSQL_USER: app
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
