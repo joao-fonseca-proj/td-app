@@ -67,9 +67,10 @@ public class SecurityConfiguration {
                 "http://localhost:3000",
                 "https://penvelope.cc",
                 "https://www.penvelope.cc",
-                "https://api.penvelope.cc"
+                "https://api.penvelope.cc",
+                "https://td-app-gilt.vercel.app"
         ));
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://penvelope.cc", "https://www.penvelope.cc", "https://api.penvelope.cc"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("https://td-app-gilt.vercel.app", "http://localhost:3000", "https://penvelope.cc", "https://www.penvelope.cc", "https://api.penvelope.cc"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
